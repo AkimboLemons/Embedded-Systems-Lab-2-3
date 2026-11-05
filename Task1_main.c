@@ -46,17 +46,17 @@ int main(void)
 	TCCR0A = (1 << COM0A1) | (1 << WGM01) | (1 << WGM00);  // fast PWM, non-inverting OC0A
 	TCCR0B = (1 << CS02) | (1 << CS00);                    // prescaler 1024 = 61.04 Hz             
 	while(1) {	
-		dutyCycleCalculate(dutyCycle1);
+		dutyCycleCalculate(dutyCycle1);						//Calculates for duty 0 button presses
+		
+		waitForButton();									
+		dutyCycleCalculate(dutyCycle2);						//Calculates for duty 1st button press
 		
 		waitForButton();
-		dutyCycleCalculate(dutyCycle2);
+		dutyCycleCalculate(dutyCycle3);						//Calculates for duty 2nd button press
 		
 		waitForButton();
-		dutyCycleCalculate(dutyCycle3);
-		
-		waitForButton();
-		dutyCycleCalculate(dutyCycle4);
-		waitForButton();
+		dutyCycleCalculate(dutyCycle4);						//Calculates for duty 3rd button press
+		waitForButton();									//Resets to 0 button presses
 	}
 }
 
@@ -73,7 +73,7 @@ void T1Delay1ms(void)
 	TIFR1  = (1 << TOV1);                   // clear flag
 }
 
-void delayMS(uint16_t ms)
+void delayMS(uint16_t ms)					//16 bit number as this gives the largest range of times
 {
 	while (ms--) T1Delay1ms();
 }
