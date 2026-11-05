@@ -21,7 +21,7 @@ int main(void)
 	TCCR1B = (1 << WGM13) | (1 << WGM12) | (1 << CS11);	
 	
 	while (1) {
-		OCR1A = 2000 + ((uint32_t)ADC * 2000) / 1023;			//to convert from desired angle to corasponding duty cycle
+		OCR1A = 1000 + ((uint32_t)ADC * 4000) / 1023;			//to convert from desired angle to corasponding duty cycle
 	}
 }
 
