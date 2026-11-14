@@ -11,3 +11,5 @@
 #define	D7	eS_PORTD7
 #define	RS	eS_PORTC6
 #define	EN	eS_PORTC7
+
+//Added this comment to check how comitting works for my vscode
