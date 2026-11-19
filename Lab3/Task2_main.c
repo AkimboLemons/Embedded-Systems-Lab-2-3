@@ -12,4 +12,17 @@
 #define	RS	eS_PORTC6
 #define	EN	eS_PORTC7
 
-//Added this comment to check how comitting works for my vscode
+//the folowing code has ben made from the library, we can probably use this to build out.
+
+void main(void)
+{
+    DDRC = 0xFF;                        // Set PORTC as output
+    DDRD = 0xFF;                        // Set PORTD as output
+
+    Lcd4_Init();                        // Initialize the LCD, from LCD.h
+    Lcd4_Clear();                       // Clear the LCD
+    Lcd4_Write_String("init done");     // Display initialization message
+    while(1) {
+
+    }
+}
