@@ -1,9 +1,6 @@
 
 // LCD Display
-#include "lcd.h"
-#include <avr/io.h>
-#include <stdint.h>
-#include <stdlib.h>
+#define F_CPU 16000000UL
 
 #define	D4	eS_PORTD4
 #define	D5	eS_PORTD5
@@ -11,6 +8,15 @@
 #define	D7	eS_PORTD7
 #define	RS	eS_PORTB0
 #define	EN	eS_PORTB1
+
+
+#include "lcd.h"
+#include <avr/io.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <util/delay.h>
+
+
 
 //the folowing code has ben made from the library, we can probably use this to build out.
 unsigned int all = 0xFF;    // save me from magic numbers.
@@ -45,21 +51,7 @@ void main(void)
 
 char USARTReceiveString(){        // this should be able to read the usart and join them into a string,
 
-    unsigned char buffer[26];                  // buffer to hold the incoming string
-    unsigned int i = 0;                        // index for the buffer
-    unsigned int x = 0;                        // counter for the number of characters received
 
-    while(1) {                        // loop until we have received the full message
-        unsigned char c = USART_Receive();     // receive a character from the USART
-        buffer[i++] = c;              // add the character to the buffer
-        if (i == 25) {               //once the buffer is full end message
-            break;                  // this assumes that the USART will send blank characters after the message is sent.
-        } else if (c == '\0') {            // check for null terminator
-            break;                  // end the message if we receive a null terminator
-        }
-    }
-    buffer[i] = '\0';                // null-terminate the string
-    return buffer;                    // return the completed string
 }
 
 void USART0_init (unsigned int ubrr) {
