@@ -23,22 +23,23 @@ unsigned char USART_Receive();
 
 void main(void)
 {
-    DDRB = zero;                       // Set PORTB as input
-    DDRD = all;                        // Set PORTD as output
+    DDRB = zero;                        // Set PORTB as input
+    DDRD = all;                         // Set PORTD as output
 
-    USART0_init(103); // 9600 baud rate for 16MHz clock
-    Lcd4_Init();                       // Initialize the LCD, from LCD.h
-    Lcd4_Clear();                      // Clear the LCD
-    Lcd4_Write_String("init done");    // Display initialization message
+    USART0_init(103);                   // 9600 baud rate for 16MHz clock
+    Lcd4_Init();                        // Initialize the LCD, from LCD.h
+    Lcd4_Clear();                       // Clear the LCD
+    Lcd4_Write_String("init done");     // Display initialization message
     while(1) {
-        
-        send(USART_Receive());
-        delay_ms(33);                  // Wait for 33 milliseconds, 30 updates per second.
+        if (UCSR0A & (1<<RXC0)) {       // Check if data is available to read
+            send(USART_Receive());      // Read and display the received character
+        }    
+        delay_ms(33);                   // Wait for 33 milliseconds, 30 updates per second.
 
     }
 }
 
 void send(string msg) {
-    Lcd4_Clear();                      // Clear the LCD
-    Lcd4_Write_String(msg);            // Display the message
+    Lcd4_Clear();                       // Clear the LCD
+    Lcd4_Write_String(msg);             // Display the message
 }
