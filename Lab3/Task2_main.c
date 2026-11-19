@@ -16,26 +16,28 @@
 unsigned int all = 0xFF;    // save me from magic numbers.
 unsigned int zero = 0x00;
 
-void send(string msg);
+void sendScroll(char msg);
 void USART0_init (unsigned int ubrr);
 unsigned char USART_Receive();
 
 
 void main(void)
 {
-    DDRB = zero;                        // Set PORTB as input
+    DDRB = all;                        // Set PORTB as output
     DDRD = all;                         // Set PORTD as output
+    DDRC = all;                         // Set PORTC as output
 
     USART0_init(103);                   // 9600 baud rate for 16MHz clock
+    pinChange(eS_PORTB0,0);             // set the LCD pin to port B
     Lcd4_Init();                        // Initialize the LCD, from LCD.h
     Lcd4_Clear();                       // Clear the LCD
     Lcd4_Write_String("init done");     // Display initialization message
     while(1) {
         if (UCSR0A & (1<<RXC0)) {       // Check if data is available to read
-            send(USART_Receive());      // Read and display the received character
-        }    
-        delay_ms(33);                   // Wait for 33 milliseconds, 30 updates per second.
+            sendScroll(USART_Receive());      // Read and display the received character
 
+        }    
+ 
     }
 }
 
@@ -59,8 +61,8 @@ unsigned char USART_Receive()
     return UDR0;
 }
 
-void send(string msg) {
-    Lcd4_Clear();                       // Clear the LCD
-    Lcd4_Write_String(msg);             // Display the message
+void sendScroll(char msg) {
+    Lcd4_Write_Char(msg);             // Display the message
+    Lcd4_Shift_Left();                  // Shift the display to the left
 }
 
