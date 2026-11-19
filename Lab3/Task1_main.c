@@ -15,7 +15,7 @@ void main(){
 
     PRR = (0 << PRUSART0);
     DDRB = all; // Set PORTB as output
-    PORTB = zero; // Initialize PORTB to 0
+    PORTB = zero; // Initialize PORTB to off, just in case.
     USART0_init(103); // 9600 baud rate for 16MHz clock
     while(1){
         LED(USART_Receive());
