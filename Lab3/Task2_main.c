@@ -16,10 +16,10 @@
 unsigned int all = 0xFF;    // save me from magic numbers.
 unsigned int zero = 0x00;
 
-void sendScroll(string msg);
+void sendScroll(char msg);
 void USART0_init (unsigned int ubrr);
 unsigned char USART_Receive();
-unsigned string USARTReceiveString();
+unsigned char USARTReceiveString();
 
 
 void main(void)
@@ -32,11 +32,12 @@ void main(void)
     pinChange(eS_PORTB0,0);             // set the LCD pin to port B
     Lcd4_Init();                        // Initialize the LCD, from LCD.h
     Lcd4_Clear();                       // Clear the LCD
-    Lcd4_Write_String("init done");     // Display initialization message
+    Lcd4_Write_String("25 character max length");     // Display initialization message
     while(1) {
         if (UCSR0A & (1<<RXC0)) {
             //we want code here that can read from the usart and after say a delay, to know when the message is finished, write it to the LCD
-            string msg = USARTReceiveString();
+            char msg[25];  // buffer to hold the incoming string
+            USARTReceiveString(msg);
             sendScroll(msg);
         }
  
@@ -44,7 +45,7 @@ void main(void)
 }
 
 
-string USARTReceiveString(){        // this should be able to read the usart and join them into a string,
+char* USARTReceiveString(){        // this should be able to read the usart and join them into a string,
 
     unsigned char buffer[25];                  // buffer to hold the incoming string
     unsigned int i = 0;                        // index for the buffer
