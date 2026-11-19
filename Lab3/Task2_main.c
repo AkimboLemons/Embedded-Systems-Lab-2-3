@@ -19,7 +19,7 @@ unsigned int zero = 0x00;
 void sendScroll(char msg);
 void USART0_init (unsigned int ubrr);
 unsigned char USART_Receive();
-unsigned char USARTReceiveString();
+unsigned char* USARTReceiveString();
 
 
 void main(void)
@@ -36,9 +36,7 @@ void main(void)
     while(1) {
         if (UCSR0A & (1<<RXC0)) {
             //we want code here that can read from the usart and after say a delay, to know when the message is finished, write it to the LCD
-            char msg[25];  // buffer to hold the incoming string
-            USARTReceiveString(msg);
-            sendScroll(msg);
+            sendScroll(USARTReceiveString());
         }
  
     }   
@@ -55,7 +53,7 @@ char* USARTReceiveString(){        // this should be able to read the usart and 
         unsigned char c = USART_Receive();     // receive a character from the USART
         buffer[i++] = c;              // add the character to the buffer
         if (i == 25) {               //once the buffer is full end message
-            break;
+            break;                  // this assumes that the USART will send blank characters after the message is sent.
         }
     }
         return buffer;                    // return the completed string
@@ -81,8 +79,8 @@ unsigned char USART_Receive()
     return UDR0;
 }
 
-void sendScroll(string msg) {
-    Lcd4_Write_Char(msg);             // Display the message
+void sendScroll(char *msg) {
+    Lcd4_Write_Char(*msg);             // Display the message
     Lcd4_Shift_Left();                  // Shift the display to the left
 }
 
