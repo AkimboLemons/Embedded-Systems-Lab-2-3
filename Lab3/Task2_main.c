@@ -16,9 +16,10 @@
 unsigned int all = 0xFF;    // save me from magic numbers.
 unsigned int zero = 0x00;
 
-void sendScroll(char msg);
+void sendScroll(string msg);
 void USART0_init (unsigned int ubrr);
 unsigned char USART_Receive();
+unsigned string USARTReceiveString();
 
 
 void main(void)
@@ -33,12 +34,30 @@ void main(void)
     Lcd4_Clear();                       // Clear the LCD
     Lcd4_Write_String("init done");     // Display initialization message
     while(1) {
-        if (UCSR0A & (1<<RXC0)) {       // Check if data is available to read
-            sendScroll(USART_Receive());      // Read and display the received character
-
-        }    
+        if (UCSR0A & (1<<RXC0)) {
+            //we want code here that can read from the usart and after say a delay, to know when the message is finished, write it to the LCD
+            string msg = USARTReceiveString();
+            sendScroll(msg);
+        }
  
+    }   
+}
+
+
+string USARTReceiveString(){        // this should be able to read the usart and join them into a string,
+
+    unsigned char buffer[25];                  // buffer to hold the incoming string
+    unsigned int i = 0;                        // index for the buffer
+    unsigned int x = 0;                        // counter for the number of characters received
+
+    while(1) {                        // loop until we have received the full message
+        unsigned char c = USART_Receive();     // receive a character from the USART
+        buffer[i++] = c;              // add the character to the buffer
+        if (i == 25) {               //once the buffer is full end message
+            break;
+        }
     }
+        return buffer;                    // return the completed string
 }
 
 void USART0_init (unsigned int ubrr) {
@@ -61,7 +80,7 @@ unsigned char USART_Receive()
     return UDR0;
 }
 
-void sendScroll(char msg) {
+void sendScroll(string msg) {
     Lcd4_Write_Char(msg);             // Display the message
     Lcd4_Shift_Left();                  // Shift the display to the left
 }
