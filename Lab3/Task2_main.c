@@ -9,8 +9,8 @@
 #define	D5	eS_PORTD5
 #define	D6	eS_PORTD6
 #define	D7	eS_PORTD7
-#define	RS	eS_PORTC6
-#define	EN	eS_PORTC7
+#define	RS	eS_PORTB0
+#define	EN	eS_PORTB1
 
 //the folowing code has ben made from the library, we can probably use this to build out.
 unsigned int all = 0xFF;    // save me from magic numbers.
@@ -19,17 +19,17 @@ unsigned int zero = 0x00;
 void sendScroll(char msg);
 void USART0_init (unsigned int ubrr);
 unsigned char USART_Receive();
-unsigned char* USARTReceiveString();
+unsigned char USARTReceiveString();
 
 
 void main(void)
 {
     DDRB = all;                        // Set PORTB as output
-    DDRD = all;                         // Set PORTD as output
+    DDRD = 0xFC;                         // Set PORTD as output
     DDRC = all;                         // Set PORTC as output
 
     USART0_init(103);                   // 9600 baud rate for 16MHz clock
-    pinChange(eS_PORTB0,0);             // set the LCD pin to port B
+    pinChange(RS,0);             // set the LCD pin to port B
     Lcd4_Init();                        // Initialize the LCD, from LCD.h
     Lcd4_Clear();                       // Clear the LCD
     Lcd4_Write_String("25 character max length");     // Display initialization message
@@ -43,9 +43,9 @@ void main(void)
 }
 
 
-char* USARTReceiveString(){        // this should be able to read the usart and join them into a string,
+char USARTReceiveString(){        // this should be able to read the usart and join them into a string,
 
-    unsigned char buffer[25];                  // buffer to hold the incoming string
+    unsigned char buffer[26];                  // buffer to hold the incoming string
     unsigned int i = 0;                        // index for the buffer
     unsigned int x = 0;                        // counter for the number of characters received
 
@@ -54,9 +54,12 @@ char* USARTReceiveString(){        // this should be able to read the usart and 
         buffer[i++] = c;              // add the character to the buffer
         if (i == 25) {               //once the buffer is full end message
             break;                  // this assumes that the USART will send blank characters after the message is sent.
+        } else if (c == '\0') {            // check for null terminator
+            break;                  // end the message if we receive a null terminator
         }
     }
-        return buffer;                    // return the completed string
+    buffer[i] = '\0';                // null-terminate the string
+    return buffer;                    // return the completed string
 }
 
 void USART0_init (unsigned int ubrr) {
@@ -80,7 +83,7 @@ unsigned char USART_Receive()
 }
 
 void sendScroll(char *msg) {
-    Lcd4_Write_Char(*msg);             // Display the message
+    Lcd4_Write_String(msg);             // Display the message
     Lcd4_Shift_Left();                  // Shift the display to the left
 }
 
